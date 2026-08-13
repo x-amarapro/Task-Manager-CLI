@@ -5,6 +5,7 @@
 
 A simple command-line task manager built in Python.
 Allows users to add, update, view, and delete tasks with persistent storage using JSON.
+Users can run command thrrough Interactive Menu within the terminal.
 
 ## Features
 
@@ -14,6 +15,7 @@ Allows users to add, update, view, and delete tasks with persistent storage usin
 * Update task name and status
 * Delete tasks
 * Save/load tasks using a JSON file
+* Interactive Menu in CLI Terminal
 
 ## How to Run
 
