@@ -23,6 +23,8 @@ VALID_STATUSES = [STATUS_COMPLETE, STATUS_IN_PROGRESS, STATUS_INCOMPLETE] #list 
 
 #-------------------------------------------------------------------------------------------------
 
+#save and load functions
+
 def load_tasks(): #function to load tasks from a file
     global task_list, next_task_ID #declare task_list and next_task_ID as global to modify within function
 
@@ -38,6 +40,12 @@ def load_tasks(): #function to load tasks from a file
     except FileNotFoundError: #if the file does not exist, it will be created when tasks are saved
         task_list = {} #initialize task_list as an empty dictionary
         next_task_ID = 1 #initialize next_task_ID to 1
+
+
+
+def save_tasks(): #function to save tasks to a file
+    with open(TASKS_FILE, "w") as file: #opens the tasks file in write mode
+        json.dump(task_list, file) #saves the task_list dictionary to the file in JSON format
 
 #-------------------------------------------------------------------------------------------------
 
@@ -99,6 +107,8 @@ def add_task(): #function to add a task to the list
     
     next_task_ID += 1 #generates a new task ID for the next task
 
+    save_tasks() #saves the added task to file
+
 
 
 def update_task_name(): #function to edit an existing task in the list
@@ -111,6 +121,8 @@ def update_task_name(): #function to edit an existing task in the list
     
     new_task_name = input("Enter New Task Name: ") #prompt for new task name
     task_list[task_to_edit]["task_name"] = new_task_name #updates the task name in the dictionary
+
+    save_tasks() #saves the updated task name to file
 
 
 
@@ -140,6 +152,9 @@ def update_task_status(): #function to edit the status of an existing task in th
     
     task_list[task_to_edit]["task_status"] = updated_status #updates the task status in the dictionary
 
+    save_tasks() #saves the added updated task status to file
+
+
 #-------------------------------------------------------------------------------------------------
 
 def remove_task(): #function to remove a task from the list
@@ -151,7 +166,19 @@ def remove_task(): #function to remove a task from the list
         return False #returns false to indicate the task was not removed
 
     del task_list[task_to_delete] #removes the task from the dictionary
+
+    save_tasks() #saves the removed task from the file
+
     return True #returns true to indicate the task was successfully removed
+
+
+
+def clear_all_tasks(): #function to clear all tasks from the list
+    task_list.clear()
+
+    save_tasks() #saves the removed tasks from the file
+
+    return True
 
 
 
@@ -164,13 +191,68 @@ def clear_completed_tasks(): #function to clear all completed tasks from the lis
 
     for task_ID in completed_tasks_list:
         del task_list[task_ID]
+
+    save_tasks() #saves the removed tasks from the file
+
     return True
-            
+
+
+
+def clear_incomplete_tasks(): #function to clear all incomplete tasks from the list
+    incomplete_tasks_list = [] #creates an empty list to hold incomplete task IDs
+
+    for task_ID, task_data in task_list.items():
+        if task_data['task_status'] == STATUS_INCOMPLETE:
+            incomplete_tasks_list.append(task_ID)
+
+    for task_ID in incomplete_tasks_list:
+        del task_list[task_ID]
+
+    save_tasks() #saves the removed tasks from the file
+
+    return True
+
+
+
+def clear_in_progress_tasks(): #function to clear all in progress tasks from the list
+    in_progress_tasks_list = [] #creates an empty list to hold in progress task IDs
+
+    for task_ID, task_data in task_list.items():
+        if task_data['task_status'] == STATUS_IN_PROGRESS:
+            in_progress_tasks_list.append(task_ID)
+
+    for task_ID in in_progress_tasks_list:
+        del task_list[task_ID]
+
+    save_tasks() #saves the removed tasks from the file
+
+    return True
+
+
+
+def clear_task_options(): #function to clear tasks from the list
+
+    print('1. All Tasks') #option for clear all tasks
+    print('2. Complete') #option for complete status
+    print('3. In Progress') #option for in progress status
+    print('4. Incomplete') #option for incomplete status
+
+    clear_tasks_choice = int(input("Which Tasks would you like to clear?: ")) #prompt for which tasks to clear
+
+    if clear_tasks_choice == 1:
+        clear_all_tasks() #calls the clear_all_tasks function to clear all tasks from the list
+    elif clear_tasks_choice == 2:
+        clear_completed_tasks() #calls the clear_completed_tasks function to clear all completed tasks from the list
+    elif clear_tasks_choice == 3:
+        clear_in_progress_tasks() #calls the clear_in_progress_tasks function to clear all in progress tasks from the list
+    elif clear_tasks_choice == 4:
+        clear_incomplete_tasks() #calls the clear_incomplete_tasks function to clear all incomplete tasks from the list
+    else:
+        print("Invalid choice, please enter a number between 1 and 4.") #error message for invalid choice
+
 #-------------------------------------------------------------------------------------------------
 
-def save_tasks(): #function to save tasks to a file
-    with open(TASKS_FILE, "w") as file: #opens the tasks file in write mode
-        json.dump(task_list, file) #saves the task_list dictionary to the file in JSON format
+
 
 #-------------------------------------------------------------------------------------------------
 
@@ -204,9 +286,18 @@ if len(sys.argv) > 1: #checks if there are command line arguments provided
     elif command == "remove":
         remove_task() #calls the remove_task function to remove a task from the list
         save_tasks() #calls the save_tasks function to save any changes made to the tasks after removing a task
+    elif command == "clear_all_tasks":
+        clear_all_tasks() #calls the clear_all_tasks function to clear all tasks from the list
+        save_tasks() #calls the save_tasks function to save any changes made to the tasks after clearing all tasks
     elif command == "clear_completed":
-        clear_completed_tasks() #calls the clear_completed_tasks function to clear all completed tasks from the list
-        save_tasks() #calls the save_tasks function to save any changes made to the tasks after clearing completed tasks
+            clear_completed_tasks() #calls the clear_completed_tasks function to clear all completed tasks from the list
+            save_tasks() #calls the save_tasks function to save any changes made to the tasks after clearing completed tasks
+    elif command == "clear_incomplete":
+            clear_incomplete_tasks() #calls the clear_incomplete_tasks function to clear all incomplete tasks from the list
+            save_tasks() #calls the save_tasks function to save any changes made to the tasks after clearing incomplete tasks
+    elif command == "clear_in_progress":
+            clear_in_progress_tasks() #calls the clear_in_progress_tasks function to clear all in-progress tasks from the list
+            save_tasks() #calls the save_tasks function to save any changes made to the tasks after clearing in-progress tasks
 
 
     else:
@@ -242,7 +333,7 @@ def task_manager_menu(): #function for the menu of the CLI Task Manager
         print("7. Update Task Status") #option to update an existing task's status
 
         print("8. Remove Task") #option to remove a task
-        print("9. Clear Completed Tasks") #option to clear all completed tasks
+        print("9. Clear Tasks") #options to clear tasks
         print("0. Exit") #option to exit the program
 
         print("""
@@ -274,7 +365,7 @@ Enter Command : """)) #prompt for user input to choose a command
         elif menu_choice == 8:
             remove_task() #calls the remove_task function to remove a task from the list
         elif menu_choice == 9:
-            clear_completed_tasks() #calls the clear_completed_tasks function to clear all completed tasks
+            clear_task_options() #calls the clear_task_options function to display clear task options
         elif menu_choice == 0:
             program_running = False #sets the program_running variable to False to exit the loop
         else:
