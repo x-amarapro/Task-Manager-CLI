@@ -380,31 +380,33 @@ def task_manager_menu(): #function for the menu of the CLI Task Manager
 
         nonlocal program_running #declare program_running as nonlocal to modify within function
         
-        menu_choice = int(input("""
-Enter Command : """)) #prompt for user input to choose a command
+        menu_choice = input("""
+Enter Command or Press X to View Menu: """) #prompt for user input to choose a command
 
-        if menu_choice == 1:
+        if menu_choice == "1":
             view_task_options() #calls the view_tasks function to display all tasks
 
-        elif menu_choice == 2:
+        elif menu_choice == "2":
             add_task() #calls the add_task function to add a new task
-        elif menu_choice == 3:
+        elif menu_choice == "3":
             update_task_name() #calls the update_task_name function to edit an existing task's name
-        elif menu_choice == 4:
+        elif menu_choice == "4":
             update_task_status() #calls the update_task_status function to edit an existing task's status
 
-        elif menu_choice == 5:
+        elif menu_choice == "5":
             remove_task() #calls the remove_task function to remove a task from the list
-        elif menu_choice == 6:
+        elif menu_choice == "6":
             clear_task_options() #calls the clear_task_options function to display clear task options
         
-        elif menu_choice == 0:
+        elif menu_choice == "0":
             program_running = False #sets the program_running variable to False to exit the loop
+        elif menu_choice == "X" or menu_choice == "x":
+            menu_options_display() #calls the menu_options_display function to display the menu of commands for the CLI Task Manager
+
         else:
             print("Invalid command, please enter a valid command.") #error message for invalid command
 
    while program_running: #loop to keep the menu running until the user chooses to exit
-      menu_options_display() #calls the menu_options_display function to display the menu
       menu_options_choice() #calls the menu_options_choice function to prompt for user input
 
 
