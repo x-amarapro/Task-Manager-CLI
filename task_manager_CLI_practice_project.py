@@ -1,5 +1,6 @@
+#-------------------------------------------------------------------------------------------------
 
-#Task Manager CLI Roadmap Practice Project
+# { Task Manager CLI Roadmap Practice Project }
 
 #-------------------------------------------------------------------------------------------------
 
@@ -23,7 +24,7 @@ VALID_STATUSES = [STATUS_COMPLETE, STATUS_IN_PROGRESS, STATUS_INCOMPLETE] #list 
 
 #-------------------------------------------------------------------------------------------------
 
-#save and load functions
+# { Save and Load Task Functions }
 
 def load_tasks(): #function to load tasks from a file
     global task_list, next_task_ID #declare task_list and next_task_ID as global to modify within function
@@ -47,9 +48,12 @@ def save_tasks(): #function to save tasks to a file
     with open(TASKS_FILE, "w") as file: #opens the tasks file in write mode
         json.dump(task_list, file) #saves the task_list dictionary to the file in JSON format
 
+
 #-------------------------------------------------------------------------------------------------
 
-#view task functions
+
+# { View Task Functions }
+
 
 def view_tasks(): #function to view the current list of tasks
     print("""
@@ -92,9 +96,34 @@ def view_incomplete_tasks(): #function to view only incomplete tasks
         if task_data['task_status'] == STATUS_INCOMPLETE:
             print(f"{task_ID}: [ ] {task_data['task_name']}") #prints incomplete tasks with a blank checkbox
 
+
+
+def view_task_options(): #function to view tasks based on status
+
+    print('1. All Tasks') #option for all tasks
+    print('2. Complete Tasks') #option for complete status
+    print('3. In Progress Tasks') #option for in progress status
+    print('4. Incomplete Tasks') #option for incomplete status
+
+    view_tasks_choice = int(input("Which Tasks would you like to view?: ")) #prompt for which tasks to view
+
+    if view_tasks_choice == 1:
+        view_tasks() #calls the view_tasks function to display all tasks
+    elif view_tasks_choice == 2:
+        view_completed_tasks() #calls the view_completed_tasks function to display only completed tasks
+    elif view_tasks_choice == 3:
+        view_in_progress_tasks() #calls the view_in_progress_tasks function to display only in progress tasks
+    elif view_tasks_choice == 4:
+        view_incomplete_tasks() #calls the view_incomplete_tasks function to display only incomplete tasks
+    else:
+        print("Invalid choice, please enter a number between 1 and 4.") #error message for invalid choice
+
+
 #-------------------------------------------------------------------------------------------------
 
-#task management functions
+
+# { Task Management Functions }
+
 
 def add_task(): #function to add a task to the list
     new_task = input("Enter New Task: ") #prompt for adding task to list
@@ -156,6 +185,10 @@ def update_task_status(): #function to edit the status of an existing task in th
 
 
 #-------------------------------------------------------------------------------------------------
+
+
+# { Remove and Clear Task Functions }
+
 
 def remove_task(): #function to remove a task from the list
 
@@ -250,6 +283,7 @@ def clear_task_options(): #function to clear tasks from the list
     else:
         print("Invalid choice, please enter a number between 1 and 4.") #error message for invalid choice
 
+
 #-------------------------------------------------------------------------------------------------
 
 
@@ -303,13 +337,16 @@ if len(sys.argv) > 1: #checks if there are command line arguments provided
     else:
         print("Invalid command, please enter a valid command.") #error message for invalid command
 
+
 #------------------------------------------------------------------------------------------------- 
 
 
 
 #-------------------------------------------------------------------------------------------------
 
-#menu for the CLI Task Manager
+
+# { Menu for the CLI Task Manager }
+
 
 def task_manager_menu(): #function for the menu of the CLI Task Manager
 
@@ -323,17 +360,15 @@ def task_manager_menu(): #function for the menu of the CLI Task Manager
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                                 """) #prints the title of the program
 
-        print("1. View All Tasks") #option to view all tasks
-        print("2. View Completed Tasks") #option to view completed tasks
-        print("3. View In Progress Tasks") #option to view in progress tasks
-        print("4. View Incomplete Tasks") #option to view incomplete tasks
+        print("1. View Tasks") #option to view all tasks
 
-        print("5. Add Task") #option to add a new task
-        print("6. Update Task Name") #option to update an existing task's name
-        print("7. Update Task Status") #option to update an existing task's status
+        print("2. Add Task") #option to add a new task
+        print("3. Update Task Name") #option to update an existing task's name
+        print("4. Update Task Status") #option to update an existing task's status
 
-        print("8. Remove Task") #option to remove a task
-        print("9. Clear Tasks") #options to clear tasks
+        print("5. Remove Task") #option to remove a task
+        print("6. Clear Tasks") #options to clear tasks
+        
         print("0. Exit") #option to exit the program
 
         print("""
@@ -349,29 +384,27 @@ def task_manager_menu(): #function for the menu of the CLI Task Manager
 Enter Command : """)) #prompt for user input to choose a command
 
         if menu_choice == 1:
-            view_tasks() #calls the view_tasks function to display all tasks
+            view_task_options() #calls the view_tasks function to display all tasks
+
         elif menu_choice == 2:
-            view_completed_tasks() #calls the view_completed_tasks function to display only completed tasks
-        elif menu_choice == 3:
-            view_in_progress_tasks() #calls the view_in_progress_tasks function to display only in progress tasks
-        elif menu_choice == 4:
-            view_incomplete_tasks() #calls the view_incomplete_tasks function to display only incomplete tasks
-        elif menu_choice == 5:
             add_task() #calls the add_task function to add a new task
-        elif menu_choice == 6:
+        elif menu_choice == 3:
             update_task_name() #calls the update_task_name function to edit an existing task's name
-        elif menu_choice == 7:
+        elif menu_choice == 4:
             update_task_status() #calls the update_task_status function to edit an existing task's status
-        elif menu_choice == 8:
+
+        elif menu_choice == 5:
             remove_task() #calls the remove_task function to remove a task from the list
-        elif menu_choice == 9:
+        elif menu_choice == 6:
             clear_task_options() #calls the clear_task_options function to display clear task options
+        
         elif menu_choice == 0:
             program_running = False #sets the program_running variable to False to exit the loop
         else:
             print("Invalid command, please enter a valid command.") #error message for invalid command
 
    while program_running: #loop to keep the menu running until the user chooses to exit
+      menu_options_display() #calls the menu_options_display function to display the menu
       menu_options_choice() #calls the menu_options_choice function to prompt for user input
 
 
